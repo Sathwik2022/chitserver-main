@@ -1,0 +1,722 @@
+openapi: 3.0.3
+info:
+  title: Chit App API Server
+  description: For chit api server
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: rahul@greenwaveit.in
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: /api/v1
+
+tags:
+  - name: user
+    description: User APIs
+  - name: region
+    description: Region APIs
+  - name: chit
+    description: Chit APIs
+  - name: loan
+    description: Loan APIs
+  - name: transaction
+    description: Transaction APIs
+
+paths:
+  /user:
+    post:
+      description: Returns back user id
+      tags:
+        - user
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              required:
+                - name
+                - password
+                - contact_number
+                - type
+                - region
+                - address
+                - aadhar_number
+                - date_of_birth
+                - photo
+              properties:
+                name:
+                  type: string
+                password:
+                  type: string
+                contact_number:
+                  type: number
+                type:
+                  type: string
+                region:
+                  type: string
+                address:
+                  type: string
+                aadhar_number:
+                  type: string
+                date_of_birth:
+                  type: string
+                photo:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdResponse"
+
+  /user/update:
+    post:
+      description: Returns back user id
+      tags:
+        - user
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              required:
+                - email
+                - name
+                - password
+                - contact_number
+                - type
+                - region
+                - address
+                - pan
+                - aadhar_number
+                - date_of_birth
+                - photo
+              properties:
+                email:
+                  type: string
+                  format: email
+                name:
+                  type: string
+                password:
+                  type: string
+                contact_number:
+                  type: number
+                type:
+                  type: string
+                region:
+                  type: string
+                address:
+                  type: string
+                pan:
+                  type: string
+                aadhar_number:
+                  type: string
+                date_of_birth:
+                  type: string
+                photo:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdResponse"
+
+  /login:
+    post:
+      tags:
+        - user
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - contact_number
+                - password
+              properties:
+                contact_number:
+                  type: number
+                password:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /disable:
+    post:
+      description: Disable single user
+      tags:
+        - user
+      operationId: toggleDisableUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - user_id
+              properties:
+                user_id:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /user/{user_id}:
+    get:
+      description: Gets single user details
+      tags:
+        - user
+      operationId: getSingleUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /users/{type}:
+    get:
+      description: Get all users of a particular type
+      tags:
+        - user
+      operationId: getUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /customers/{region}:
+    get:
+      description: Get all customers of a particular region
+      tags:
+        - user
+      operationId: getCustomersOfRegion
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: region
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /agents/{region}:
+    get:
+      description: Get all agents of a particular region
+      tags:
+        - user
+      operationId: getAgentsOfRegion
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: region
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /region:
+    get:
+      description: Get all users of a particular type
+      tags:
+        - region
+      operationId: getRegions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /chit:
+    post:
+      description: Adds a new chit and returns back chit id
+      tags:
+        - chit
+      operationId: createChit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - name
+                - chit_number
+                - clients
+                - amount
+                - start_date
+                - number_of_installments
+                - installment_amount
+              properties:
+                name:
+                  type: string
+                chit_number:
+                  type: number
+                clients:
+                  type: array
+                  items:
+                    type: string
+                amount:
+                  type: number
+                start_date:
+                  type: string
+                number_of_installments:
+                  type: number
+                installment_amount:
+                  type: number
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdResponse"
+
+  /update_chit/clients:
+    post:
+      description: Add or delete members from chit
+      tags:
+        - chit
+      operationId: chitMembersUpdate
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - chit_id
+                - clients
+              properties:
+                clients:
+                  type: array
+                  items:
+                    type: string
+                chit_id:
+                  type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /chits:
+    get:
+      description: Get all chits
+      tags:
+        - chit
+      operationId: getAllChits
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /chits/{user_id}:
+    get:
+      description: Get chits of user
+      tags:
+        - chit
+      operationId: getChitsUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /loan:
+    post:
+      description: Adds a new loan and returns back the loan id
+      tags:
+        - loan
+      operationId: createLoan
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required:
+                - loan_number
+                - region
+                - issued_date
+                - amount
+                - payable
+                - repayment_type
+                - client
+                - agent
+              properties:
+                loan_number:
+                  type: string
+                region:
+                  type: string
+                issued_date:
+                  type: string
+                amount:
+                  type: number
+                payable:
+                  type: number
+                repayment_type:
+                  type: string
+                client:
+                  type: object
+                agent:
+                  type: object
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdResponse"
+
+  /loans:
+    get:
+      description: Get all loans
+      tags:
+        - loan
+      operationId: getAllLoans
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /loans/{user_id}:
+    get:
+      description: Get loans of user
+      tags:
+        - loan
+      operationId: getLoansUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /transaction:
+    post:
+      description: Update transaction of Chit or Loan
+      tags:
+        - transaction
+      operationId: createTransaction
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              required:
+                - transaction_number
+                - client
+                - received_amount
+                - received_date
+                - agent
+                - region
+                - type
+              properties:
+                transaction_number:
+                  type: string
+                region:
+                  type: string
+                received_amount:
+                  type: number
+                received_date:
+                  type: string
+                client:
+                  type: object
+                agent:
+                  type: object
+                type:
+                  type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdResponse"
+
+  /filter_transactions/{type}/{from_date}/{to_date}:
+    get:
+      description: Get transactions date range
+      tags:
+        - transaction
+      operationId: filterTransactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: from_date
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: to_date
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /transactions/{transaction_number}/{user_id}:
+    get:
+      description: Get transactions of a particular type for user
+      tags:
+        - transaction
+      operationId: getTransactionsUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: transaction_number
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /transactions/agent/{agent_id}/{date}:
+    get:
+      description: Get transactions of agent on a date
+      tags:
+        - transaction
+      operationId: getTransactionsOfAgentOnDate
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: date
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: agent_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /all_transactions/agent/{agent_id}:
+    get:
+      description: Get all transactions of agent
+      tags:
+        - transaction
+      operationId: getAllTransactionsOfAgent
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: agent_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+  /transactions/chit/withdrawal/all/{transaction_number}:
+    get:
+      description: Get withdrawal transactions of chit
+      tags:
+        - transaction
+      operationId: getWithdrawal
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: transaction_number
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+
+components:
+  schemas:
+    IdResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+      properties:
+        id:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
